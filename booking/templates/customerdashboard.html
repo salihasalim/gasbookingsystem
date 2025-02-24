@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Dashboard - Gas Booking System</title>
+    <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h2>User Dashboard</h2>
+            </div>
+            <nav class="sidebar-nav">
+                <ul>
+                    <li class="active">
+                        <a href="#dashboard">Dashboard</a>
+                    </li>
+                    <li>
+                        <a href="{%url 'book_cylinder'%}">Book Cylinder</a>
+                    </li>
+                    <li>
+                        <a href="">My Bookings</a>
+                    </li>
+                    <li>
+                        <a href="{%url 'profile_view'%}">Profile</a>
+                    </li>
+                    <li>
+                        <a href="#payments">Payment History</a>
+                    </li>
+                    <li>
+                        <a href="">Logout</a>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="top-bar">
+                <div class="user-welcome">
+                    Welcome, {{ request.user}}!
+                </div>
+            </header>
+
+            <!-- User Dashboard Overview -->
+            <section class="dashboard-overview">
+                <div class="quick-actions">
+                    <div class="quick-actions">
+                        <button class="btn btn-primary" onclick="location.href='{% url 'book_cylinder' %}'">
+                            <span class="btn-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="12" cy="12" r="10"/>
+                                    <line x1="12" y1="8" x2="12" y2="16"/>
+                                    <line x1="8" y1="12" x2="16" y2="12"/>
+                                </svg>
+                            </span>
+                            <span class="btn-text">Book New Cylinder</span>
+                        </button>
+                        
+                        <button class="btn btn-secondary" onclick="showTrackingModal()">
+                            <span class="btn-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="12" cy="12" r="10"/>
+                                    <polyline points="12 6 12 12 16 14"/>
+                                </svg>
+                            </span>
+                            <span class="btn-text">Track Current Booking</span>
+                        </button>
+                        
+                       
+                        <button class="btn btn-danger" onclick="location.href='{% url 'request_connection' %}'">
+                            <span class="btn-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <polygon points="7.86 2 16.14 2 22 7.86 22 16.14 16.14 22 7.86 22 2 16.14 2 7.86 7.86 2"/>
+                                    <line x1="12" y1="8" x2="12" y2="12"/>
+                                    <line x1="12" y1="16" x2="12.01" y2="16"/>
+                                </svg>
+                            </span>
+                            <span class="btn-text">New Connection</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Current Booking Status -->
+                {% if current_booking %}
+                <div class="current-booking-status">
+                    <h2>Current Booking Status</h2>
+                    <div class="status-timeline">
+                        <div class="status-point {% if current_booking.status >= 1 %}active{% endif %}">
+                            Booked
+                        </div>
+                        <div class="status-point {% if current_booking.status >= 2 %}active{% endif %}">
+                            Confirmed
+                        </div>
+                        <div class="status-point {% if current_booking.status >= 3 %}active{% endif %}">
+                            Out for Delivery
+                        </div>
+                        <div class="status-point {% if current_booking.status >= 4 %}active{% endif %}">
+                            Delivered
+                        </div>
+                    </div>
+                    <div class="booking-details">
+                        <p>Booking ID: {{ current_booking.id }}</p>
+                        <p>Expected Delivery: {{ current_booking.expected_delivery }}</p>
+                        <p>Amount: ₹{{ current_booking.amount }}</p>
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- Booking History -->
+                <div class="booking-history">
+                    <h2>Recent Bookings</h2>
+                    <div class="booking-list">
+                        {% for booking in recent_bookings %}
+                        <div class="booking-item">
+                            <div class="booking-info">
+                                <p>Booking ID: {{ booking.id }}</p>
+                                <p>Date: {{ booking.date }}</p>
+                                <p>Status: {{ booking.status }}</p>
+                            </div>
+                            <div class="booking-actions">
+                                <button onclick="viewBookingDetails({{ booking.id }})">View Details</button>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- Payment History -->
+                <div class="payment-history">
+                    <h2>Recent Payments</h2>
+                    <div class="payment-list">
+                        {% for payment in recent_payments %}
+                        <div class="payment-item">
+                            <p>Transaction ID: {{ payment.transaction_id }}</p>
+                            <p>Amount: ₹{{ payment.amount }}</p>
+                            <p>Date: {{ payment.date }}</p>
+                            <p>Status: {{ payment.status }}</p>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Booking Tracking Modal -->
+    <div id="trackingModal" class="modal">
+        <div class="modal-content">
+            <h2>Track Your Booking</h2>
+            <div class="tracking-details">
+                <!-- Tracking information will be loaded here -->
+            </div>
+            <button onclick="closeTrackingModal()">Close</button>
+        </div>
+    </div>
+</body>
+</html>

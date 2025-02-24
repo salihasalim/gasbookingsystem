@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Page</title>
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>  <!-- Razorpay's Checkout.js -->
+    <style>
+        .payment-container {
+          max-width: 400px;
+          margin: 2rem auto;
+          padding: 2rem;
+          border-radius: 8px;
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+          background-color: white;
+          text-align: center;
+        }
+        
+        .payment-title {
+          color: #2d3748;
+          font-size: 1.5rem;
+          font-weight: 600;
+          margin-bottom: 1.5rem;
+        }
+        
+        .payment-info {
+          display: none; /* Hides the booking ID and amount */
+        }
+        
+        .pay-button {
+          background-color: #4299e1;
+          color: white;
+          border: none;
+          padding: 0.75rem 2rem;
+          border-radius: 6px;
+          font-size: 1rem;
+          font-weight: 500;
+          cursor: pointer;
+          transition: background-color 0.2s;
+        }
+        
+        .pay-button:hover {
+          background-color: #3182ce;
+        }
+        
+        .pay-button:active {
+          transform: scale(0.98);
+        }
+        </style>
+</head>
+<body>
+
+    <div class="payment-container">
+        <h2 class="payment-title">Complete your Payment</h2>
+        <p class="payment-info">Booking ID: {{ payment.booking.id }}</p>
+        <p class="payment-info">Amount: ₹{{ payment.amount }}</p>
+        
+        <button class="pay-button">Pay Now</button>
+      </div> 
+
+    <form action="" method="POST">
+        {% csrf_token %}
+        <input type="hidden" name="razorpay_order_id" value="{{ order_id }}">
+        <input type="hidden" name="razorpay_payment_id" id="razorpay_payment_id">
+        <input type="hidden" name="razorpay_signature" id="razorpay_signature">
+        
+        <script src="https://checkout.razorpay.com/v1/checkout.js"
+                data-key="{{ razorpay_key }}"
+                data-order_id="{{ order_id }}"
+                data-amount="{{ amount|floatformat:0 }}"  <!-- Use the amount directly -->
+                data-currency="INR"
+                data-buttontext="Pay Now"
+                data-name="Your Company Name"
+                data-description="Payment for booking"
+                data-image="https://your-logo-url.com/logo.png"
+                data-prefill.name="{{ user.username }}"
+                data-prefill.email="{{ user.email }}"
+                data-theme.color="#F37254">
+        </script>
+    </form>
+    
+    
+
+</body>
+</html>
+

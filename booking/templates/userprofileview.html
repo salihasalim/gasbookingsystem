@@ -1,0 +1,19 @@
+html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile</title>
+</head>
+<body>
+    <h2>{{ user_profile.user.username }}'s Profile</h2>
+    <p><strong>Address:</strong> {{ user_profile.address }}</p>
+    <p><strong>Aadhar Card:</strong> <img src="{{ user_profile.aadharcard.url }}" alt="Aadhar Card"></p>
+    <p><strong>Ration Card:</strong> <img src="{{ user_profile.rationcard.url }}" alt="Ration Card"></p>
+    <p><strong>Photo:</strong> <img src="{{ user_profile.photo.url }}" alt="Photo"></p>
+
+
+    <a href="{% url 'edit_profile' %}">Edit Profile</a>
+</body>
+</html>

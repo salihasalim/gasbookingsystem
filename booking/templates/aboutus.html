@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+{%load static%}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us - Gas Booking System</title>
+    <link rel="stylesheet" href="{% static 'css/aboutus.css' %}">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="container">
+            <a href="/" class="navbar-brand">Gas Booking System</a>
+            <ul class="nav">
+                <li><a href="{%url 'home'%}">Home</a></li>
+                <li><a href="{% url 'login' %}"class="register-btn">Login</a></li>
+                <li><a href="{%url 'register'%}" class="register-btn">Register</a></li> 
+            </ul>
+        </div>
+    </nav>
+    <div class="container about-content">
+        <section class="intro">
+            <h1>About Us</h1>
+            <p>Welcome to Gas Booking System! We're committed to providing the best gas delivery service. Find out more about us below.</p>
+        </section>
+
+        <section class="company-details">
+            <div class="card">
+                <h2>Our Mission</h2>
+                <p>To make gas delivery easy, safe, and accessible for everyone. Our mission is to enhance convenience and safety for both customers and suppliers.</p>
+            </div>
+            <div class="card">
+                <h2>Our Vision</h2>
+                <p>We aim to be the leading platform for gas booking globally, trusted for our quick deliveries, customer satisfaction, and transparency.</p>
+            </div>
+        </section>
+
+        <section class="testimonials">
+            <h2>Customer Testimonials</h2>
+            <div class="testimonial-card">
+                <blockquote>
+                    "Gas Booking System made my life so much easier! Fast deliveries, reliable service, and great customer support. Highly recommended!"
+                </blockquote>
+                <p>- Jane Doe, Customer</p>
+            </div>
+            <div class="testimonial-card">
+                <blockquote>
+                    "We’ve been using Gas Booking System for our restaurant's gas needs for months now. Always on time, every time. Great service!"
+                </blockquote>
+                <p>- John Smith, Business Owner</p>
+            </div>
+        </section>
+
+        <section class="our-team">
+            <h2>Our Team</h2>
+            <div class="team-container">
+                <div class="team-member">
+                    <img src="{% static 'images/team1.jpeg' %}" alt="Team Member 1">
+                    <p><strong>Alex Johnson</strong><br>CEO and Founder</p>
+                </div>
+                <div class="team-member">
+                    <img src="{% static 'images/team2.jpg' %}" alt="Team Member 2">
+                    <p><strong>Sarath Lee</strong><br>Operations Manager</p>
+                </div>
+                <div class="team-member">
+                    <img src="{% static 'images/team3.jpg' %}" alt="Team Member 3">
+                    <p><strong>Michael Brown</strong><br>Delivery Manager</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="contact-info">
+            <h2>Contact Us</h2>
+            <p>If you have any questions or need assistance, feel free to contact us:</p>
+            <ul>
+                <li><strong>Email:</strong> support@gasbookingsystem.com</li>
+                <li><strong>Phone:</strong> +1 800 123 4567</li>
+                <li><strong>Address:</strong> 123 Gas Avenue, City, Country</li>
+            </ul>
+        </section>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2025 Gas Booking System. All Rights Reserved.</p>
+    </footer>
+</body>
+</html>

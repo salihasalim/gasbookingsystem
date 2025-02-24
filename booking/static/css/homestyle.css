@@ -1,0 +1,75 @@
+.navbar {
+    background-color: #333;
+    padding: 10px;
+    color: white;
+}
+
+.navbar .navbar-brand {
+    font-size: 24px;
+    color: white;
+    text-decoration: none;
+}
+
+.navbar .nav {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    float: right;
+}
+
+.navbar .nav li {
+    display: inline-block;
+    margin-left: 20px;
+}
+
+.navbar .nav a {
+    color: white;
+    text-decoration: none;
+    font-size: 16px;
+}
+
+.navbar .nav a:hover {
+    color: #ff6600;
+}
+
+/* Register Button */
+.register-btn {
+    background-color: #28a745; /* Green color */
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-size: 16px;
+    color: white;
+    transition: background-color 0.3s;
+}
+
+.register-btn:hover {
+    background-color: #218838; /* Darker green on hover */
+}
+
+/* Body content styles */
+.body-content {
+    text-align: center;
+    padding: 50px 20px;
+}
+
+.hero-image {
+    width: 100%;
+    max-width: 800px;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+}
+
+h1 {
+    margin-top: 30px;
+    font-size: 36px;
+    color: #333;
+}
+
+footer {
+    background-color: #333;
+    color: white;
+    text-align: center;
+    padding: 10px 0;
+    margin-top: 30px;
+}

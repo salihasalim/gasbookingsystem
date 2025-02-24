@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+    {%load static%}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f3b8b8;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            flex-direction: column;
+         
+        }
+
+        .container {
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            width: 400px;
+            height:530px;
+            text-align: center;
+        }
+
+        h2 {
+            color: #333;
+        }
+
+        .logo {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 15px;
+        }
+
+        form input {
+          padding:10px;
+          margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+
+        button {
+            background-color: #0e380f;
+            color: white;
+            border: none;
+            padding: 12px;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .links {
+            margin-top: 15px;
+        }
+
+        .links a {
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        .links a:hover {
+            text-decoration: underline;
+        }
+
+        .back-btn {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 12px;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 4px;
+            margin-top: 10px;
+        }
+
+        .back-btn:hover {
+            background-color: #0056b3;
+        }
+        .logo{
+            width:140px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- Image at the top -->
+        <img src="{% static 'images/adminloghin.jpg' %}" alt="Logo" class="logo">
+
+        <h2>Admin Login</h2>
+        
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Login</button>
+        </form>
+
+        <div class="links">
+            <p>Not an admin? <a href="{% url 'customer_login' %}">Customer Login</a></p>
+        </div>
+
+        <!-- Back to Home button -->
+        <button class="back-btn" onclick="window.location.href='{% url home %}'">Back to Home</button>
+    </div>
+
+</body>
+</html>
+

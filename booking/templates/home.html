@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gas Booking System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+        
+        body {
+            background-color: #f5f5f5;
+        }
+        
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #1a237e;
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .logo {
+            color: white;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        
+        .nav-links {
+            display: flex;
+            list-style: none;
+        }
+        
+        .nav-links li {
+            margin-left: 1.5rem;
+        }
+        
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .nav-links a:hover {
+            color: #64b5f6;
+        }
+        
+        .hero {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 80vh;
+            background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('/api/placeholder/1600/900');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            text-align: center;
+            padding: 1rem;
+        }
+        
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+        
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 600px;
+            margin-bottom: 2rem;
+        }
+        
+        .cta-button {
+            display: inline-block;
+            background-color: #43a047;
+            color: white;
+            padding: 0.8rem 2rem;
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+        
+        .cta-button:hover {
+            background-color: #2e7d32;
+        }
+        
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            padding: 4rem 2rem;
+            background-color: white;
+        }
+        
+        .feature-card {
+            text-align: center;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+        }
+        
+        .feature-card h3 {
+            margin: 1rem 0;
+            color: #1a237e;
+        }
+        
+        footer {
+            background-color: #1a237e;
+            color: white;
+            text-align: center;
+            padding: 2rem;
+            margin-top: 2rem;
+        }
+        
+        @media (max-width: 768px) {
+            .navbar {
+                flex-direction: column;
+                padding: 1rem;
+            }
+            
+            .nav-links {
+                margin-top: 1rem;
+            }
+            
+            .nav-links li {
+                margin: 0 0.5rem;
+            }
+            
+            .hero h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo">Gas Booking System</div>
+        <ul class="nav-links">
+            <li><a href="{%url 'home'%}">Home</a></li>
+            <li><a href="{%url 'aboutus'%}">About Us</a></li>
+            <li><a href="{%url 'register'%}">Register</a></li>
+            <li><a href="{%url 'login'%}">Login</a></li>
+        </ul>
+    </nav>
+    
+    <section class="hero">
+        <h1>Easy Gas Booking Service</h1>
+        <p>Book your LPG cylinder refill with just a few clicks. Fast, secure, and convenient service at your fingertips.</p>
+        <a href="{%url 'register'%}" class="cta-button">Register Now</a>
+    </section>
+    
+    <section class="features">
+        <div class="feature-card">
+            <h3>Quick Booking</h3>
+            <p>Book your gas cylinder in less than a minute with our streamlined process.</p>
+        </div>
+        <div class="feature-card">
+            <h3>Secure Payments</h3>
+            <p>Multiple payment options with bank-grade security for your transactions.</p>
+        </div>
+        <div class="feature-card">
+            <h3>Delivery Tracking</h3>
+            <p>Real-time updates on your gas cylinder delivery status.</p>
+        </div>
+    </section>
+    
+    <footer>
+        <p>&copy; 2025 Gas Booking System. All rights reserved.</p>
+    </footer>
+</body>

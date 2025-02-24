@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+{%load static%}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gas Booking System - Login</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'css/login.css' %}">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo"><i class="fas fa-fire-flame-curved"></i>Gas Booking System</div>
+        <ul class="nav-links">
+            <li><a href="{%url 'home'%}">Home</a></li>
+            <li><a href="#">About Us</a></li>
+            <li><a href="{%url 'register'%}">Register</a></li>
+            <li><a href="#" class="active">Login</a></li>
+        </ul>
+    </nav>
+    
+    <div class="content-wrapper">
+        <div class="login-container">
+            <div class="login-image">
+                <h3>Welcome Back!</h3>
+                <p>Access your account to manage your gas bookings, track deliveries, and more.</p>
+            </div>
+            <div class="login-form">
+                <div class="login-header">
+                    <h2>Login to Your Account</h2>
+                    <p>Enter your credentials to access your account</p>
+                </div>
+                
+                <form method="post">
+                    {% csrf_token %}
+                    
+                    <div class="form-group">
+                        <label for="username">Username or Email</label>
+                        <i class="fas fa-user"></i>
+                        <input type="text" id="username" name="username" placeholder="Enter your username or email" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="password" name="password" placeholder="Enter your password" required>
+                    </div>
+                    
+                    <div class="remember-forgot">
+                        <div class="remember-me">
+                            <input type="checkbox" id="remember" name="remember">
+                            <label for="remember">Remember me</label>
+                        </div>
+                        <div class="forgot-password">
+                            <a href="#">Forgot password?</a>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="login-button">
+                        <i class="fas fa-sign-in-alt"></i>Login
+                    </button>
+                    
+                    <div class="login-footer">
+                        <p>Not a customer? <a href="{% url 'register' %}">Sign Up Here</a></p>
+                    </div>
+                    
+                    <button type="button" class="home-button" onclick="window.location.href='{% url 'home' %}'">
+                        <i class="fas fa-home"></i>Back to Home
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <footer>
+        <p>&copy; 2025 Gas Booking System. All rights reserved.</p>
+    </footer>
+</body>
+</html>

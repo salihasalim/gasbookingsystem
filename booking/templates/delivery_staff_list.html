@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Delivery Staff List | Gas Booking System</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        .navbar {
+            background-color: #333;
+            padding: 15px 0;
+            color: white;
+        }
+
+        .nav-container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .brand {
+            color: white;
+            text-decoration: none;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+        }
+
+        .nav-links a:hover {
+            color: #ddd;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1000px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: white;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            border-radius: 4px;
+        }
+
+        h2 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .staff-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        .staff-table th,
+        .staff-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .staff-table th {
+            background-color: #f8f8f8;
+            font-weight: bold;
+        }
+
+        .staff-table tr:hover {
+            background-color: #f5f5f5;
+        }
+
+        .status-active {
+            color: #28a745;
+            font-weight: 500;
+        }
+
+        .status-inactive {
+            color: #dc3545;
+            font-weight: 500;
+        }
+
+        .add-staff-btn {
+            display: inline-block;
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+
+        .add-staff-btn:hover {
+            background-color: #45a049;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                width: 95%;
+                padding: 15px;
+            }
+
+            .staff-table th,
+            .staff-table td {
+                padding: 8px;
+            }
+
+            .nav-links {
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="/" class="brand">Gas Booking System</a>
+            <div class="nav-links">
+                <a href="/dashboard">Dashboard</a>
+                <a href="/bookings">Bookings</a>
+                <a href="/staff">Staff</a>
+                <a href="/profile">Profile</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h2>Delivery Staff List</h2>
+
+        {% if delivery_staff %}
+        <table class="staff-table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Phone</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for staff in delivery_staff %}
+                <tr>
+                    <td>{{ staff.name }}</td>
+                    <td>{{ staff.phone }}</td>
+                    <td>
+                        {% if staff.status == 'Active' %}
+                            <span class="status-active">● Active</span>
+                        {% else %}
+                            <span class="status-inactive">● Inactive</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a href="">Edit</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <div class="empty-state">
+            <p>No delivery staff found.</p>
+        </div>
+        {% endif %}
+
+        <a href="{% url 'add_delivery_staff' %}" class="add-staff-btn">Add New Delivery Staff</a>
+    </div>
+</body>
+</html>
