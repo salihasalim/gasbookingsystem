@@ -238,10 +238,8 @@
         <div class="nav-container">
             <a href="/" class="brand">Gas Booking System</a>
             <div class="nav-links">
-                <a href="/dashboard">Dashboard</a>
-                <a href="/bookings">Bookings</a>
-                <a href="/connections">Connections</a>
-                <a href="/profile">Profile</a>
+                <li><a href="{% url 'user_dashboard' %}">User Dashboard</a></li>
+                <a href="booking_history">Bookings</a>
             </div>
         </div>
     </nav>

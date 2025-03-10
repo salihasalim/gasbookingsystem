@@ -183,14 +183,14 @@
 </head>
 <body>
     <nav class="navbar">
-        <div class="nav-container">
-            <a href="#" class="logo">GasConnect</a>
-            <ul class="nav-links">
-                <li><a href="#">Dashboard</a></li>
-                <li><a href="#">Requests</a></li>
-                <li><a href="#">Settings</a></li>
-            </ul>
-        </div>
+        <nav class="navbar">
+            <div class="nav-container">
+                <a href="/" class="brand">Gas Booking System - Admin</a>
+                <li><a href="{% url 'admin_dashboard' %}">Admin Dashboard</a></li>
+    
+                <li><a href="{%url 'logout'%}">Logout</a></li>
+            </div>
+        </nav>
     </nav>
 
     <div class="container">

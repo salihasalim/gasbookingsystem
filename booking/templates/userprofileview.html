@@ -1,19 +1,128 @@
-html
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Profile</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        /* Navbar */
+        .navbar {
+            background-color: #333;
+            overflow: hidden;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            padding: 10px 15px;
+            margin: 0 5px;
+            transition: 0.3s;
+        }
+
+        .navbar a:hover {
+            background-color: #575757;
+            border-radius: 5px;
+        }
+
+        /* Profile Card */
+        .profile-container {
+            max-width: 500px;
+            margin: 50px auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .profile-container h2 {
+            color: #333;
+        }
+
+        .profile-container p {
+            font-size: 16px;
+            color: #555;
+            margin: 10px 0;
+        }
+
+        .profile-container img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+
+        .edit-button {
+            display: inline-block;
+            background: #28a745;
+            color: white;
+            padding: 10px 15px;
+            margin-top: 15px;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: 0.3s;
+        }
+
+        .edit-button:hover {
+            background: #218838;
+        }
+    </style>
 </head>
 <body>
-    <h2>{{ user_profile.user.username }}'s Profile</h2>
-    <p><strong>Address:</strong> {{ user_profile.address }}</p>
-    <p><strong>Aadhar Card:</strong> <img src="{{ user_profile.aadharcard.url }}" alt="Aadhar Card"></p>
-    <p><strong>Ration Card:</strong> <img src="{{ user_profile.rationcard.url }}" alt="Ration Card"></p>
-    <p><strong>Photo:</strong> <img src="{{ user_profile.photo.url }}" alt="Photo"></p>
 
+    <!-- Navbar -->
+    <div class="navbar">
+        <div>
+            <a href="{% url 'home' %}">Home</a>
+            <a href="{% url 'profile_view' %}">Profile</a>
+        </div>
+        <li><a href="{% url 'user_dashboard' %}">User Dashboard</a></li>
 
-    <a href="{% url 'edit_profile' %}">Edit Profile</a>
+        <a href="{% url 'logout' %}">Logout</a>
+    </div>
+
+    <!-- Profile Section -->
+    <div class="profile-container">
+        <h2>{{ user_profile.user.username }}'s Profile</h2>
+        <p><strong>Address:</strong> {{ user_profile.address }}</p>
+
+        <p><strong>Aadhaar Card:</strong> <br> 
+            {% if connection_request.aadhaar_card %}
+                <img src="{{ connection_request.aadhaar_card.url }}" alt="Aadhaar Card">
+            {% else %}
+                <p>No Aadhaar Card uploaded.</p>
+            {% endif %}
+        </p>
+
+        <p><strong>Ration Card:</strong> <br> 
+            {% if connection_request.ration_card %}
+                <img src="{{ connection_request.ration_card.url }}" alt="Ration Card">
+            {% else %}
+                <p>No Ration Card uploaded.</p>
+            {% endif %}
+        </p>
+
+        <p><strong>Photo:</strong> <br> 
+            {% if connection_request.photo %}
+                <img src="{{ connection_request.photo.url }}" alt="Profile Photo">
+            {% else %}
+                <p>No Profile Photo uploaded.</p>
+            {% endif %}
+        </p>
+
+        
+    </div>
+
 </body>
 </html>

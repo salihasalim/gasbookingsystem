@@ -25,9 +25,8 @@ class UserProfile(models.Model):
     address = models.TextField(max_length=255, null=True, blank=True)  # Example additional field
     adhar_number = models.IntegerField(unique=True,null=True,blank=True)  
 
-    def _str_(self):
-        return f'{self.user.username} Profile'
-
+def __str__(self):
+    return f'{self.user.username} Profile' 
 
 class ConnectionRequest(models.Model):
     STATUS_CHOICES = [
@@ -168,5 +167,4 @@ class Payment(models.Model):
 
     def __str__(self):
         return f"Payment for {self.booking} - {self.payment_status}"
-    
-   
+

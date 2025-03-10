@@ -23,17 +23,15 @@
                     <li>
                         <a href="{%url 'book_cylinder'%}">Book Cylinder</a>
                     </li>
-                    <li>
-                        <a href="">My Bookings</a>
-                    </li>
+                   
                     <li>
                         <a href="{%url 'profile_view'%}">Profile</a>
                     </li>
                     <li>
-                        <a href="#payments">Payment History</a>
+                        <a href="{%url 'booking_history'%}">Booking History</a>
                     </li>
                     <li>
-                        <a href="">Logout</a>
+                        <a href="{%url 'logout'%}">Logout</a>
                     </li>
                 </ul>
             </nav>
@@ -62,15 +60,7 @@
                             <span class="btn-text">Book New Cylinder</span>
                         </button>
                         
-                        <button class="btn btn-secondary" onclick="showTrackingModal()">
-                            <span class="btn-icon">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <circle cx="12" cy="12" r="10"/>
-                                    <polyline points="12 6 12 12 16 14"/>
-                                </svg>
-                            </span>
-                            <span class="btn-text">Track Current Booking</span>
-                        </button>
+                        
                         
                        
                         <button class="btn btn-danger" onclick="location.href='{% url 'request_connection' %}'">
@@ -112,39 +102,7 @@
                 </div>
                 {% endif %}
 
-                <!-- Booking History -->
-                <div class="booking-history">
-                    <h2>Recent Bookings</h2>
-                    <div class="booking-list">
-                        {% for booking in recent_bookings %}
-                        <div class="booking-item">
-                            <div class="booking-info">
-                                <p>Booking ID: {{ booking.id }}</p>
-                                <p>Date: {{ booking.date }}</p>
-                                <p>Status: {{ booking.status }}</p>
-                            </div>
-                            <div class="booking-actions">
-                                <button onclick="viewBookingDetails({{ booking.id }})">View Details</button>
-                            </div>
-                        </div>
-                        {% endfor %}
-                    </div>
-                </div>
-
-                <!-- Payment History -->
-                <div class="payment-history">
-                    <h2>Recent Payments</h2>
-                    <div class="payment-list">
-                        {% for payment in recent_payments %}
-                        <div class="payment-item">
-                            <p>Transaction ID: {{ payment.transaction_id }}</p>
-                            <p>Amount: ₹{{ payment.amount }}</p>
-                            <p>Date: {{ payment.date }}</p>
-                            <p>Status: {{ payment.status }}</p>
-                        </div>
-                        {% endfor %}
-                    </div>
-                </div>
+                
             </section>
         </main>
     </div>

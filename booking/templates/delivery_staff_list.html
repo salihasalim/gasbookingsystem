@@ -137,10 +137,15 @@
         <div class="nav-container">
             <a href="/" class="brand">Gas Booking System</a>
             <div class="nav-links">
-                <a href="/dashboard">Dashboard</a>
-                <a href="/bookings">Bookings</a>
-                <a href="/staff">Staff</a>
-                <a href="/profile">Profile</a>
+                <nav class="navbar">
+                    <div class="nav-container">
+                        <a href="/" class="brand">Gas Booking System - Admin</a>
+                        <li><a href="{% url 'admin_dashboard' %}">Admin Dashboard</a></li>
+            
+                        <li><a href="{%url 'logout'%}">Logout</a></li>
+                    </div>
+                </nav>
+                
             </div>
         </div>
     </nav>
@@ -164,14 +169,10 @@
                     <td>{{ staff.name }}</td>
                     <td>{{ staff.phone }}</td>
                     <td>
-                        {% if staff.status == 'Active' %}
-                            <span class="status-active">● Active</span>
-                        {% else %}
-                            <span class="status-inactive">● Inactive</span>
-                        {% endif %}
+                       {{staff.status}}
                     </td>
                     <td>
-                        <a href="">Edit</a>
+                        <a href="{%url 'delivery_staff_edit' staff.id %}">Edit</a>
                     </td>
                 </tr>
                 {% endfor %}

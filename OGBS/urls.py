@@ -17,7 +17,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from booking import views
-from booking.views import user_list_view 
+from booking.views import user_list_view
 from django.conf import settings
 from django.conf.urls.static import static
 
@@ -34,6 +34,8 @@ urlpatterns = [
     path('admin-dashboard/',views.AdminDashboardView.as_view(), name='admin_dashboard'),
     path('add-delivery-staff/',views.AddDeliveryStaffView.as_view(), name='add_delivery_staff'),
     path('delivery-staff-list/',views.DeliveryStaffListView.as_view(), name='delivery_staff_list'),
+    path('delivery-staff-edit/<int:pk>/',views.DeliveryStaffEditView.as_view(), name='delivery_staff_edit'),
+
     path('user-dashboard/',views.UserDashboardView.as_view(), name='user_dashboard'),
     path('request-connection/',views.RequestConnectionView.as_view(), name='request_connection'),
     path('admins/connection-requests/',views.AdminRequestConnectionView.as_view(), name='admin_connection_requests'),
@@ -44,9 +46,10 @@ urlpatterns = [
     path('book-cylinder/', views.BookCylinderView.as_view(), name='book_cylinder'),
     path('booking-history/', views.BookingHistoryView.as_view(), name='booking_history'),
     path('payment/<int:booking_id>/', views.PaymentView.as_view(), name='payment_page'),
-    # path('verify-payment/', views.verify_payment, name='verify_payment'),
+    path('bookings/',views.AdminBookingListView.as_view(), name='admin_bookings'),
     path('admin-dashboard/', views.users_list, name='admin_dashboard'),
-
+    path('payments/',views.PaymentHistoryView.as_view(), name='payment_history'),
+    path('logout/',views.LogoutView.as_view(),name='logout')
 
 
 
