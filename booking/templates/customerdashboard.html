@@ -5,8 +5,358 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Dashboard - Gas Booking System</title>
-    <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #3a86ff;
+            --secondary-color: #4361ee;
+            --accent-color: #ef476f;
+            --light-bg: #f8f9fa;
+            --dark-text: #212529;
+            --medium-text: #6c757d;
+            --light-text: #f8f9fa;
+            --success-color: #06d6a0;
+            --warning-color: #ffd166;
+            --border-radius: 8px;
+            --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            --transition: all 0.3s ease;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f5f7fa;
+            color: var(--dark-text);
+            line-height: 1.6;
+        }
+        
+        .dashboard-container {
+            display: flex;
+            min-height: 100vh;
+        }
+        
+        /* Sidebar Styles */
+        .sidebar {
+            width: 260px;
+            background: linear-gradient(to bottom, var(--primary-color), var(--secondary-color));
+            color: var(--light-text);
+            padding: 20px 0;
+            position: fixed;
+            height: 100vh;
+            box-shadow: var(--box-shadow);
+            z-index: 10;
+            transition: var(--transition);
+        }
+        
+        .sidebar-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 20px;
+        }
+        
+        .sidebar-header h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+        
+        .sidebar-nav ul {
+            list-style: none;
+        }
+        
+        .sidebar-nav li {
+            margin-bottom: 5px;
+            border-left: 4px solid transparent;
+            transition: var(--transition);
+        }
+        
+        .sidebar-nav li.active {
+            border-left: 4px solid var(--light-text);
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        .sidebar-nav li:hover {
+            background-color: rgba(255, 255, 255, 0.08);
+        }
+        
+        .sidebar-nav a {
+            display: block;
+            padding: 12px 24px;
+            color: var(--light-text);
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+        
+        /* Main Content Styles */
+        .main-content {
+            flex: 1;
+            margin-left: 260px;
+            padding: 20px;
+        }
+        
+        .top-bar {
+            background-color: white;
+            padding: 15px 20px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            margin-bottom: 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .user-welcome {
+            font-size: 1.1rem;
+            font-weight: 500;
+        }
+        
+        /* Dashboard Overview Styles */
+        .dashboard-overview {
+            display: grid;
+            gap: 24px;
+            margin-top: 20px;
+        }
+        
+        .quick-actions {
+            background-color: white;
+            border-radius: var(--border-radius);
+            padding: 24px;
+            box-shadow: var(--box-shadow);
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            display: flex;
+            align-items: center;
+            padding: 12px 24px;
+            border-radius: var(--border-radius);
+            border: none;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            gap: 8px;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--secondary-color);
+            transform: translateY(-2px);
+        }
+        
+        .btn-danger {
+            background-color: var(--accent-color);
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background-color: #d64161;
+            transform: translateY(-2px);
+        }
+        
+        .btn-icon {
+            display: inline-flex;
+        }
+        
+        /* Current Booking Status */
+        .current-booking-status {
+            background-color: white;
+            border-radius: var(--border-radius);
+            padding: 24px;
+            box-shadow: var(--box-shadow);
+        }
+        
+        .current-booking-status h2 {
+            font-size: 1.25rem;
+            margin-bottom: 24px;
+            color: var(--dark-text);
+            position: relative;
+        }
+        
+        .current-booking-status h2:after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            width: 40px;
+            height: 3px;
+            background-color: var(--primary-color);
+            border-radius: 2px;
+        }
+        
+        .status-timeline {
+            display: flex;
+            justify-content: space-between;
+            margin: 40px 0;
+            position: relative;
+        }
+        
+        .status-timeline:before {
+            content: '';
+            position: absolute;
+            top: 15px;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background-color: #e9ecef;
+            z-index: 1;
+        }
+        
+        .status-point {
+            background-color: white;
+            border: 2px solid #e9ecef;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2;
+            position: relative;
+            font-size: 0;
+        }
+        
+        .status-point:after {
+            content: attr(data-label);
+            position: absolute;
+            top: 35px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.85rem;
+            white-space: nowrap;
+            color: var(--medium-text);
+        }
+        
+        .status-point.active {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+            color: white;
+        }
+        
+        .status-point.active:after {
+            color: var(--dark-text);
+            font-weight: 500;
+        }
+        
+        .booking-details {
+            background-color: var(--light-bg);
+            padding: 16px;
+            border-radius: var(--border-radius);
+            margin-top: 20px;
+        }
+        
+        .booking-details p {
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .booking-details p:last-child {
+            margin-bottom: 0;
+        }
+        
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 100;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-content {
+            background-color: white;
+            border-radius: var(--border-radius);
+            padding: 24px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+        }
+        
+        .modal h2 {
+            margin-bottom:
+            20px;
+            font-size: 1.5rem;
+        }
+        
+        .modal button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            .sidebar {
+                width: 220px;
+            }
+            
+            .main-content {
+                margin-left: 220px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .dashboard-container {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+            }
+            
+            .main-content {
+                margin-left: 0;
+            }
+            
+            .status-timeline {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 40px;
+            }
+            
+            .status-timeline:before {
+                height: 100%;
+                width: 4px;
+                left: 15px;
+                top: 0;
+            }
+            
+            .status-point {
+                margin-left: 20px;
+            }
+            
+            .status-point:after {
+                top: 0;
+                left: 40px;
+                transform: none;
+            }
+        }
+    </style>
 </head>
 <body>
     <div class="dashboard-container">
@@ -23,7 +373,6 @@
                     <li>
                         <a href="{%url 'book_cylinder'%}">Book Cylinder</a>
                     </li>
-                   
                     <li>
                         <a href="{%url 'profile_view'%}">Profile</a>
                     </li>
@@ -41,39 +390,34 @@
         <main class="main-content">
             <header class="top-bar">
                 <div class="user-welcome">
-                    Welcome, {{ request.user}}!
+                    Welcome, {{ request.user }}!
                 </div>
             </header>
 
             <!-- User Dashboard Overview -->
             <section class="dashboard-overview">
                 <div class="quick-actions">
-                    <div class="quick-actions">
-                        <button class="btn btn-primary" onclick="location.href='{% url 'book_cylinder' %}'">
-                            <span class="btn-icon">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <circle cx="12" cy="12" r="10"/>
-                                    <line x1="12" y1="8" x2="12" y2="16"/>
-                                    <line x1="8" y1="12" x2="16" y2="12"/>
-                                </svg>
-                            </span>
-                            <span class="btn-text">Book New Cylinder</span>
-                        </button>
-                        
-                        
-                        
-                       
-                        <button class="btn btn-danger" onclick="location.href='{% url 'request_connection' %}'">
-                            <span class="btn-icon">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <polygon points="7.86 2 16.14 2 22 7.86 22 16.14 16.14 22 7.86 22 2 16.14 2 7.86 7.86 2"/>
-                                    <line x1="12" y1="8" x2="12" y2="12"/>
-                                    <line x1="12" y1="16" x2="12.01" y2="16"/>
-                                </svg>
-                            </span>
-                            <span class="btn-text">New Connection</span>
-                        </button>
-                    </div>
+                    <button class="btn btn-primary" onclick="location.href='{% url 'book_cylinder' %}'">
+                        <span class="btn-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10"/>
+                                <line x1="12" y1="8" x2="12" y2="16"/>
+                                <line x1="8" y1="12" x2="16" y2="12"/>
+                            </svg>
+                        </span>
+                        <span class="btn-text">Book New Cylinder</span>
+                    </button>
+                    
+                    <button class="btn btn-danger" onclick="location.href='{% url 'request_connection' %}'">
+                        <span class="btn-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polygon points="7.86 2 16.14 2 22 7.86 22 16.14 16.14 22 7.86 22 2 16.14 2 7.86 7.86 2"/>
+                                <line x1="12" y1="8" x2="12" y2="12"/>
+                                <line x1="12" y1="16" x2="12.01" y2="16"/>
+                            </svg>
+                        </span>
+                        <span class="btn-text">New Connection</span>
+                    </button>
                 </div>
 
                 <!-- Current Booking Status -->
@@ -81,28 +425,18 @@
                 <div class="current-booking-status">
                     <h2>Current Booking Status</h2>
                     <div class="status-timeline">
-                        <div class="status-point {% if current_booking.status >= 1 %}active{% endif %}">
-                            Booked
-                        </div>
-                        <div class="status-point {% if current_booking.status >= 2 %}active{% endif %}">
-                            Confirmed
-                        </div>
-                        <div class="status-point {% if current_booking.status >= 3 %}active{% endif %}">
-                            Out for Delivery
-                        </div>
-                        <div class="status-point {% if current_booking.status >= 4 %}active{% endif %}">
-                            Delivered
-                        </div>
+                        <div class="status-point {% if current_booking.status >= 1 %}active{% endif %}" data-label="Booked"></div>
+                        <div class="status-point {% if current_booking.status >= 2 %}active{% endif %}" data-label="Confirmed"></div>
+                        <div class="status-point {% if current_booking.status >= 3 %}active{% endif %}" data-label="Out for Delivery"></div>
+                        <div class="status-point {% if current_booking.status >= 4 %}active{% endif %}" data-label="Delivered"></div>
                     </div>
                     <div class="booking-details">
-                        <p>Booking ID: {{ current_booking.id }}</p>
-                        <p>Expected Delivery: {{ current_booking.expected_delivery }}</p>
-                        <p>Amount: ₹{{ current_booking.amount }}</p>
+                        <p><span>Booking ID:</span> <span>{{ current_booking.id }}</span></p>
+                        <p><span>Expected Delivery:</span> <span>{{ current_booking.expected_delivery }}</span></p>
+                        <p><span>Amount:</span> <span>₹{{ current_booking.amount }}</span></p>
                     </div>
                 </div>
                 {% endif %}
-
-                
             </section>
         </main>
     </div>
@@ -117,5 +451,11 @@
             <button onclick="closeTrackingModal()">Close</button>
         </div>
     </div>
+
+    <script>
+        function closeTrackingModal() {
+            document.getElementById('trackingModal').style.display = 'none';
+        }
+    </script>
 </body>
 </html>
