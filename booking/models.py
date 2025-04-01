@@ -3,14 +3,11 @@ from django.db import models
 import random
 import string
 from django.utils import timezone
+import time
 
 
 
-# def generate_consumer_number():
-#     # You can implement a more complex logic to generate a unique consumer number.
-#     # For now, we'll generate a random number with a combination of letters and digits.
-#     consumer_number = ''.join(random.choices(string.ascii_uppercase + string.digits, k=10))
-#     return consumer_number
+
 
 class CustomUser(AbstractUser):
     phone = models.IntegerField(null=True, blank=True,unique=True)
@@ -49,18 +46,27 @@ class ConnectionRequest(models.Model):
         return f"Connection Request by {self.user.username}"
 
     def save(self, *args, **kwargs):
-        # If the request is approved, automatically generate a consumer number
         if self.status == 'approved' and not self.consumer_number:
             self.consumer_number = f"CONSUMER-{self.user.id}-{self.requested_at.strftime('%Y%m%d%H%M%S')}"
         super().save(*args, **kwargs)
 
   
 def generate_consumer_number(self):
-        """Automatically generate a unique consumer number"""
-        if not self.consumer_number:
-            # For example, generate a random consumer number or use a simple auto-incrementing method
-            self.consumer_number = f'CON{self.id:04d}'  # Format like 'CON0001', 'CON0002', etc.
-            self.save()
+        """Generate a unique 12-digit consumer number"""
+        if not self.consumer_number:  
+            timestamp = int(time.time()) % 10000000000  # 10-digit timestamp  
+            random_digits = random.randint(10, 99)  # 2 random digits  
+            self.consumer_number = f"{timestamp}{random_digits}"  
+            
+            # Ensure uniqueness
+            while Consumer.objects.filter(consumer_number=self.consumer_number).exists():
+                self.consumer_number = f"{timestamp}{random.randint(10, 99)}"  
+
+def save(self, *args, **kwargs):
+        """Override save to ensure consumer_number is set before saving"""
+        self.generate_consumer_number()  
+        super().save(*args, **kwargs)  
+
 
 def str(self):
         return f"Request by {self.user.username} - {self.status}"

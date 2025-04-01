@@ -5,6 +5,34 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Request New LPG Connection | Gas Booking System</title>
     <style>
+
+        .alert {
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-bottom: 1rem;
+            font-size: 0.875rem;
+        }
+        
+        .alert-success {
+            background-color: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+        }
+        
+        .alert-error {
+            background-color: rgba(239, 68, 68, 0.1);
+            color: var(--error);
+        }
+        
+        .alert-warning {
+            background-color: rgba(234, 179, 8, 0.1);
+            color: #eab308;
+        }
+        
+        .alert-info {
+            background-color: rgba(59, 130, 246, 0.1);
+            color: var(--primary);
+        }
+        
         :root {
             --primary: #3b82f6;
             --primary-dark: #2563eb;
@@ -251,13 +279,12 @@
            
 
             {% if messages %}
-                {% for message in messages %}
-                    <div class="success-message">
-                        {{ message }}
-                    </div>
-                {% endfor %}
-            {% endif %}
-            
+    {% for message in messages %}
+        <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}">
+            {{ message }}
+        </div>
+    {% endfor %}
+{% endif %}
             <form method="POST" enctype="multipart/form-data">
                 {% csrf_token %}
                 {{ form.as_p }}

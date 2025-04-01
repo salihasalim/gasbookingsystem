@@ -12,6 +12,8 @@ from .models import CustomUser,DeliveryStaff,ConnectionRequest,CylinderBooking,P
 from django.template.loader import render_to_string
 from django.conf import settings
 from django.urls import reverse
+from django.views.decorators.cache import never_cache
+from booking.decorators import signin_required
 from django.http import HttpResponseRedirect
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
@@ -19,6 +21,7 @@ import razorpay
 from django.core.mail import send_mail
 from django.utils import timezone  # Import timezone
 from datetime import timedelta
+import random
 
 
 
@@ -36,14 +39,13 @@ def send_welcome_email(user):
         html_message=message 
     )
 
-
-
+@method_decorator(never_cache, name='dispatch')
 class HomeView(TemplateView):
        template_name = 'home.html'
-
+@method_decorator(never_cache, name='dispatch')
 class AboutusView(TemplateView):
     template_name='aboutus.html'
-
+@method_decorator(never_cache, name='dispatch')
 class RegisterView(CreateView):
     model = CustomUser
     form_class = CustomUserCreationForm
@@ -59,6 +61,8 @@ class RegisterView(CreateView):
        
 from django.contrib.auth.views import LoginView
 
+@method_decorator(never_cache, name='dispatch')
+
 class CustomLoginView(View):
 
     def get(self, request):
@@ -70,31 +74,25 @@ class CustomLoginView(View):
         if form.is_valid():
             user = form.get_user()
             login(request, user)  
+            
             if user.is_superuser:  
                 return redirect('admin_dashboard')
             else:
                 return redirect('user_dashboard')
-                return render(request, 'login.html', {'form': form})
+
+        # If the form is invalid, show an error message
+        messages.error(request, "Invalid username or password. Please try again.")
+        return render(request, 'login.html', {'form': form})  # Ensure response is returned
 
 
-from django.shortcuts import render
-from booking.models import ConnectionRequest
 
+
+@never_cache
 def profile_view(request):
     connection_request = ConnectionRequest.objects.filter(user=request.user).first()  # Avoids .get() error
     return render(request, 'userprofileview.html', {'connection_request': connection_request})
 
 
-from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth.decorators import login_required
-from django.contrib import messages
-from .models import UserProfile, ConnectionRequest
-from .forms import UserProfileForm, ConnectionRequestForm  # Ensure you have forms for both models
-from django.shortcuts import render, redirect
-from django.contrib.auth.decorators import login_required
-from django.contrib import messages
-from .models import UserProfile, ConnectionRequest
-from .forms import UserProfileForm, ConnectionRequestForm
 
 @login_required
 def edit_profile(request):
@@ -121,9 +119,8 @@ def edit_profile(request):
 
     return render(request, 'edit_profile.html', {'form': form, 'connection_form': connection_form})
 
-
-from django.views.generic import TemplateView
-
+decs=[signin_required,never_cache]
+@method_decorator(decs,name="dispatch")
 class AdminDashboardView(TemplateView):
     template_name = 'admindashboard.html'
 
@@ -138,16 +135,17 @@ class AdminDashboardView(TemplateView):
 
 
 
-
+@never_cache
 def user_list_view(request):
     users = CustomUser.objects.all()  
     return render(request, 'userlist.html', {'users': users})
 
+@never_cache
 def users_list(request):
     total_users=CustomUser.objects.count()
     return render(request, 'admindashboard.html', {'total_users': total_users})
 
-
+@method_decorator(never_cache, name='dispatch')
 @method_decorator(staff_member_required, name='dispatch') 
 class AddDeliveryStaffView(View):
     def get(self, request):
@@ -160,12 +158,13 @@ class AddDeliveryStaffView(View):
             form.save()
             return redirect('delivery_staff_list')  
         return render(request, 'add_delivery_staff.html', {'form': form})
-
+@method_decorator(never_cache, name='dispatch')
 class DeliveryStaffListView(ListView):
     model = DeliveryStaff
     template_name = 'delivery_staff_list.html'
     context_object_name = 'delivery_staff'
 
+@method_decorator(never_cache, name='dispatch')
 class DeliveryStaffEditView(View):
     def get(self, request, pk):
         delivery_staff = get_object_or_404(DeliveryStaff, pk=pk)
@@ -180,27 +179,38 @@ class DeliveryStaffEditView(View):
             return redirect('delivery_staff_list')  
         return render(request, 'delivery_staff_edit.html', {'form': form, 'delivery_staff': delivery_staff})
 
-
+@method_decorator(decs,name="dispatch")
 class UserDashboardView(TemplateView):
     template_name = 'customerdashboard.html'
 
+@method_decorator(never_cache, name='dispatch')
 
-class RequestConnectionView(LoginRequiredMixin,View):
+class RequestConnectionView(LoginRequiredMixin, View):
     def get(self, request):
         form = ConnectionRequestForm()
         return render(request, 'request_connection.html', {'form': form})
 
     def post(self, request):
+        # Check if the user has an existing connection request or an active connection
+        existing_request = ConnectionRequest.objects.filter(user=request.user, status__in=['pending', 'approved']).exists()
+
+        if existing_request:
+            messages.error(request, "You have already applied for a connection or have an existing connection. "
+                                    "Please contact our office if you have any concerns.")
+            return redirect('user_dashboard')  # Redirecting to user dashboard or another appropriate page
+
         form = ConnectionRequestForm(request.POST, request.FILES)
         if form.is_valid():
             connection_request = form.save(commit=False)
             connection_request.user = request.user  
             connection_request.save()
+            messages.success(request, "Your connection request has been submitted successfully.")
             return redirect('user_dashboard')  
+
         return render(request, 'request_connection.html', {'form': form})
 
 
-
+@method_decorator(decs,name="dispatch")
 class AdminRequestConnectionView(LoginRequiredMixin, ListView):
     model = ConnectionRequest
     template_name = 'admin_connection_requests.html'
@@ -215,6 +225,15 @@ print(f"MEDIA_URL: {settings.MEDIA_URL}")
 print(f"MEDIA_ROOT: {settings.MEDIA_ROOT}")
 
 
+def generate_unique_consumer_number():
+    """Generate a 12-digit unique consumer number."""
+    while True:
+        new_number = str(random.randint(100000000000, 999999999999))
+        if not ConnectionRequest.objects.filter(consumer_number=new_number).exists():
+            return new_number
+
+
+@never_cache
 @user_passes_test(lambda u: u.is_staff) 
 def admin_approve_connection(request, pk):
     connection_request = get_object_or_404(ConnectionRequest, pk=pk)
@@ -224,16 +243,61 @@ def admin_approve_connection(request, pk):
 
         if action == 'approve':
             connection_request.status = 'approved'
-            connection_request.consumer_number = f"CON-{connection_request.id}"  
+            
+            # Assign a new 12-digit consumer number
+            connection_request.consumer_number = generate_unique_consumer_number()
+            
             connection_request.save()
-            return redirect('approved_requests') 
+            subject = "Gas Connection Approved ✅"
+            message = f"""
+            Dear {connection_request.user.first_name},
+
+            Congratulations! Your gas connection request has been approved.
+            
+            Your Consumer Number: {connection_request.consumer_number}
+            
+            You can now book cylinders through our platform.
+
+            Regards,
+            GasConnect Team
+            """
+            send_mail(subject, message, settings.EMAIL_HOST_USER, [connection_request.user.email])
+
+            messages.success(request, "Connection request approved, and email sent to the user!")
+            return redirect('approved_requests')
+            
+
         elif action == 'deny':
             connection_request.status = 'denied'
             connection_request.save()
-            return redirect('denied_requests')  
+            messages.error(request, "❌ Connection request denied.")
+            return redirect('denied_requests')
+
 
     return render(request, 'approve_deny_connection.html', {'request': connection_request})
 
+
+
+
+# def admin_approve_connection(request, pk):
+#     connection_request = get_object_or_404(ConnectionRequest, pk=pk)
+
+#     if request.method == 'POST':
+#         action = request.POST.get('action')
+
+#         if action == 'approve':
+#             connection_request.status = 'approved'
+#             connection_request.consumer_number = f"CON-{connection_request.id}"  
+#             connection_request.save()
+#             return redirect('approved_requests') 
+#         elif action == 'deny':
+#             connection_request.status = 'denied'
+#             connection_request.save()
+#             return redirect('denied_requests')  
+
+#     return render(request, 'approve_deny_connection.html', {'request': connection_request})
+
+@method_decorator(decs,name="dispatch")
 class ApprovedRequestListView(LoginRequiredMixin, ListView):
     model = ConnectionRequest
     template_name = 'approved_requests.html'
@@ -243,7 +307,7 @@ class ApprovedRequestListView(LoginRequiredMixin, ListView):
 
         return ConnectionRequest.objects.filter(status='approved')
 
-
+@method_decorator(decs,name="dispatch")
 class DeniedRequestListView(LoginRequiredMixin, ListView):
     model = ConnectionRequest
     template_name = 'denied_requests.html'
@@ -255,61 +319,61 @@ class DeniedRequestListView(LoginRequiredMixin, ListView):
 
 
 
-
+@method_decorator(decs,name="dispatch")
 class BookCylinderView(LoginRequiredMixin, CreateView):
     model = CylinderBooking
     template_name = 'book_cylinder.html'
     fields = ['cylinder_type', 'payment_method']
 
     def form_valid(self, form):
-        form.instance.user = self.request.user
-        
-        payment_method = form.cleaned_data['payment_method']
-        cylinder_type = form.cleaned_data['cylinder_type']
-        
+        user = self.request.user
+
+        connection = ConnectionRequest.objects.filter(user=user, status='approved').exists()
+        if not connection:
+            messages.error(self.request, "You cannot book a cylinder without an approved connection. Please contact our office.")
+            return redirect('user_dashboard')
+
+        current_year = now().year
+        yearly_booking_count = CylinderBooking.objects.filter(user=user, booking_date__year=current_year).count()
+        if yearly_booking_count >= 12:
+            messages.error(self.request, "You have reached the maximum limit of 12 cylinders per year. You cannot book more at this time.")
+            return redirect('booking_history')
+
+        form.instance.user = user
         available_staff = DeliveryStaff.objects.filter(status='available').first()
         if available_staff:
             form.instance.delivery_staff = available_staff
             messages.success(self.request, "Booking successful! A delivery staff has been assigned.")
         else:
-            messages.warning(self.request, "No delivery staff available at the moment. We'll assign staff shortly.")
-        
+            messages.warning(self.request, "No delivery staff available at the moment. We will assign one shortly.")
+
         self.object = form.save()
 
-        if self.object is None:
-            messages.error(self.request, "There was an error with your booking. Please try again.")
-            return self.form_invalid(form)
-
         amount = self.object.calculate_amount()
+        payment_method = form.cleaned_data['payment_method']
 
         payment = Payment.objects.create(
-            user=self.request.user,
+            user=user,
             booking=self.object,
             payment_method=payment_method,
             amount=amount,
             payment_status='Pending'
         )
-        
-        if payment_method in ['UPI', 'Credit Card']:
 
+        # ✅ Step 5: Redirect based on payment method
+        if payment_method in ['UPI', 'Credit Card']:
             return redirect('payment_page', booking_id=self.object.id)
-        else: 
+        else:
             payment.payment_status = 'COD Pending'
             payment.save()
-            
             messages.success(self.request, "Booking successful! Payment will be collected on delivery.")
             return redirect('booking_history')
-        if payment_method == 'COD':
-            payment.payment_status = 'Pending'
-            payment.save()
-            messages.success(self.request, "Booking successful! Payment will be collected on delivery.")
-            return redirect('booking_history')
-
 
     def form_invalid(self, form):
         messages.error(self.request, "There was an error with your booking. Please try again.")
         return super().form_invalid(form)
 
+@method_decorator(decs,name="dispatch")
 @method_decorator(csrf_exempt, name='dispatch')
 class PaymentView(View):
     def get(self, request, booking_id):
@@ -386,6 +450,7 @@ class PaymentView(View):
             return redirect('booking_history')
 
 
+@method_decorator(decs,name="dispatch")
 class BookingHistoryView(LoginRequiredMixin, ListView):
     model = CylinderBooking
     template_name = 'booking_history.html'
@@ -404,12 +469,13 @@ class BookingHistoryView(LoginRequiredMixin, ListView):
                 booking.payment_info = None
         return context
 
+@method_decorator(decs,name="dispatch")
 class AdminBookingListView(ListView):
     model = CylinderBooking
     template_name = 'booking_list.html'  # Create this template
     context_object_name = 'bookings'
-    ordering = ['-booking_date']  
-    
+    ordering = ['-booking_date'] 
+
 class LogoutView(View):
     def get(self,request,*args,**kwargs):
         
@@ -417,7 +483,7 @@ class LogoutView(View):
     
         return redirect('home') 
 
-
+@method_decorator(decs,name="dispatch")
 class PaymentHistoryView(ListView):
     model = Payment
     template_name = 'payment_history.html'

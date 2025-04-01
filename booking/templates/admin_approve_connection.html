@@ -4,32 +4,95 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Approve or Deny Request</title>
+    <style>
+        .messages {
+            list-style: none;
+            padding: 10px;
+            margin: 10px auto;
+            max-width: 500px;
+            text-align: center;
+        }
+
+        .message {
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .success {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .error {
+            background-color: #E74C3C;
+            color: white;
+        }
+
+        .warning {
+            background-color: #F39C12;
+            color: white;
+        }
+
+        .info {
+            background-color: #3498DB;
+            color: white;
+        }
+
+        .close-btn {
+            margin-left: 15px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+    </style>
 </head>
 <body>
     <nav class="navbar">
         <div class="nav-container">
             <a href="/" class="brand">Gas Booking System - Admin</a>
             <li><a href="{% url 'admin_dashboard' %}">Admin Dashboard</a></li>
-
-            <li><a href="{%url 'logout'%}">Logout</a></li>
+            <li><a href="{% url 'logout' %}">Logout</a></li>
         </div>
     </nav>
+
+    <!-- Display Messages -->
+    {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+                <li class="message {% if message.tags %}{{ message.tags }}{% endif %}">
+                    {{ message }}
+                    <span class="close-btn" onclick="this.parentElement.style.display='none';">&times;</span>
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
     <h2>Approve or Deny Connection Request for {{ request.user.username }}</h2>
     
     <p>Address: {{ request.address }}</p>
-    <p>Phone: {{ request.phone}}</p>
+    <p>Phone: {{ request.phone }}</p>
     <p>Aadhaar Card: <a href="{{ request.aadhaar_card.url }}" target="_blank">View</a></p>
     <p>Ration Card: <a href="{{ request.ration_card.url }}" target="_blank">View</a></p>
     <p>Photo: <a href="{{ request.photo.url }}" target="_blank">View</a></p>
 
     <form method="POST">
         {% csrf_token %}
-        <!-- Hidden field to pass the request ID to the server -->
         <input type="hidden" name="request_id" value="{{ request.id }}">
         
         <button type="submit" name="action" value="approve">Approve</button>
         <button type="submit" name="action" value="deny">Deny</button>
     </form>
+
+    <script>
+        // Auto-hide messages after 5 seconds
+        setTimeout(function() {
+            const messages = document.querySelectorAll(".message");
+            messages.forEach(message => {
+                message.style.display = "none";
+            });
+        }, 5000);
+    </script>
 </body>
 </html>
-
